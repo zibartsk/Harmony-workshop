@@ -57,3 +57,8 @@ variable "azure_version" {
   description = "VM name"
   type = string
 }
+
+variable "internet_acl" {
+  description = "List of IPs and subnets that can access VMs from internet"
+  type = list
+}

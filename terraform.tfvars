@@ -1,4 +1,4 @@
-vm_count        = 2
+vm_count        = 6
 location        = "North Europe"
 prefix          = "HAR-LAB"
 address_space   = "10.0.0.0/16"
@@ -10,3 +10,4 @@ azure_publisher = "MicrosoftWindowsDesktop"
 azure_offer     = "Windows-10"
 azure_sku       = "win10-22h2-pro"
 azure_version   = "latest"
+internet_acl    = ["84.217.2.35", "213.88.151.64/27"]

@@ -41,18 +41,21 @@ resource "azurerm_network_security_group" "nsg" {
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
 
+  # Inbound access rule from internet
   security_rule {
-    name                       = "Inbound-any"
-    priority                   = 1000
+    name                       = "Inbound-from-internet-all-ports-specific-IPs"
+    priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefix      = "84.217.2.35"
+    source_address_prefixes    = var.internet_acl
     destination_address_prefix = "*"
   }
-    security_rule {
+  
+  # Outbound access rule to block all traffic between VMs themselves if needed
+  security_rule {
     name                       = "Oubound-block-internal"
     priority                   = 100
     direction                  = "Outbound"
@@ -94,7 +97,7 @@ resource "azurerm_network_interface_application_security_group_association" "exa
   application_security_group_id = azurerm_application_security_group.asg.id
 }
 
-# Create virtual machine
+# Create virtual machines
 resource "azurerm_windows_virtual_machine" "main" {
   count               = var.vm_count
   name                = "${var.prefix}-vm${count.index + 1}"
