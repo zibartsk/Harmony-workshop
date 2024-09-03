@@ -10,4 +10,4 @@ azure_publisher = "MicrosoftWindowsDesktop"
 azure_offer     = "Windows-10"
 azure_sku       = "win10-22h2-pro"
 azure_version   = "latest"
-internet_acl    = ["84.217.2.35", "213.88.151.64/27"]
+internet_acl    = ["1.2.3.4", "5.6.7.8/27"]
