@@ -25,7 +25,7 @@ resource "azurerm_public_ip" "public_ip" {
   name                = "${var.prefix}-vm${count.index + 1}-public-ip"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
 }
 
 # Create application security group
@@ -99,15 +99,16 @@ resource "azurerm_network_interface_application_security_group_association" "exa
 
 # Create virtual machines
 resource "azurerm_windows_virtual_machine" "main" {
-  count               = var.vm_count
-  name                = "${var.prefix}-vm${count.index + 1}"
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-  size                = var.vm_size
-  admin_username      = var.vm_user
-  admin_password      = var.vm_password
+  count                 = var.vm_count
+  name                  = "${var.prefix}-vm${count.index + 1}"
+  resource_group_name   = azurerm_resource_group.main.name
+  location              = azurerm_resource_group.main.location
+  size                  = var.vm_size
+  admin_username        = var.vm_user
+  admin_password        = var.vm_password
+  timezone              = var.vm_timezone
   network_interface_ids = ["${azurerm_network_interface.main.*.id[count.index]}"]
-
+  
   source_image_reference {
     publisher = var.azure_publisher
     offer     = var.azure_offer
@@ -121,3 +122,21 @@ resource "azurerm_windows_virtual_machine" "main" {
     caching              = "ReadWrite"
   }
 }
+
+/*
+# Change default RDP 3389 port on VM if necessery
+resource "azurerm_virtual_machine_extension" "change_rdp_port" {
+  count                      = var.vm_count
+  name                       = "${var.prefix}-vm${count.index + 1}-ext"
+  virtual_machine_id         = element(azurerm_windows_virtual_machine.main.*.id, count.index)
+  publisher                  = "Microsoft.Compute"
+  type                       = "CustomScriptExtension"
+  type_handler_version       = "1.9"
+
+  protected_settings = <<SETTINGS
+    {
+      "commandToExecute": "powershell -encodedCommand ${textencodebase64(file("${path.module}/rdp_port.ps1"), "UTF-16LE")}"
+    }
+  SETTINGS
+}
+*/

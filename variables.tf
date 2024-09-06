@@ -38,6 +38,11 @@ variable "vm_password" {
   type = string
 }
 
+variable "vm_timezone" {
+  description = "https://jackstromberg.com/2017/01/list-of-time-zones-consumed-by-azure/"
+  type = string
+}
+
 variable "azure_publisher" {
   description = "VM name"
   type = string
